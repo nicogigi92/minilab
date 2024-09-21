@@ -1,0 +1,37 @@
+all:
+  vars:
+    loadbalancers_vip: "{{ lookup('env', 'LB_VIP') }}"
+    keepalived_password: "{{ lookup('env', 'KEEPALIVED_PASSWORD') }}"
+    
+loadbalancers:
+  hosts:
+    lb_master:
+      ansible_host: "{{ lookup('env', 'LB_MASTER_IP') }}"
+      ansible_user: "{{ lookup('env', 'LB_USER') }}"
+      role: MASTER
+    lb_backup:
+      ansible_host: "{{ lookup('env', 'LB_BACKUP_IP') }}"
+      ansible_user: "{{ lookup('env', 'LB_USER') }}"
+      role: BACKUP
+
+masters:
+  hosts:
+    node01:
+      ansible_host: "{{ lookup('env', 'NODE01_IP') }}"
+      ansible_user: "{{ lookup('env', 'NODE_USER') }}"
+      role: master
+    node02:
+      ansible_host: "{{ lookup('env', 'NODE02_IP') }}"
+      ansible_user: "{{ lookup('env', 'NODE_USER') }}"
+      role: master
+    node03:
+      ansible_host: "{{ lookup('env', 'NODE03_IP') }}"
+      ansible_user: "{{ lookup('env', 'NODE_USER') }}"
+      role: master
+
+workers:
+  hosts:
+    node04:
+      ansible_host: "{{ lookup('env', 'NODE04_IP') }}"
+      ansible_user: "{{ lookup('env', 'NODE_USER') }}"
+      role: worker

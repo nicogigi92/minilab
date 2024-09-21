@@ -21,3 +21,11 @@ To access it, I just need to connect my PC to my ZeroTier network. As the loadba
 
 ![Alt text](./img/architecture.png "Architecture")
 
+## Repository
+
+The sub-folders of this repository contain the configuration of the lab, POCs and services. The [inventory.yml](./inventory.yml) and [.env.sample](.env.sample) files store the project variables and serve as the starting point for the various ansible playbooks. 
+For example, having filled in a .env file following the [.env.sample](.env.sample) sample, I can launch the loadbalancer configuration with the following command:
+```bash
+source .env
+ansible-playbook -i inventory.yml ./loadbalancer/playbook.yml
+```
