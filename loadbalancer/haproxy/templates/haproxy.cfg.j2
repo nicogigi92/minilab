@@ -1,0 +1,29 @@
+frontend k3s-api-server
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend k3s-api-server
+
+backend k3s-api-server
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s
+    {% for host in groups['masters'] %}
+    server {{ host }} {{ hostvars[host]['ansible_host'] }}:6443 check
+    {% endfor %}
+
+frontend minilab-ui
+    bind *:443
+    mode tcp
+    option tcplog
+    default_backend minilab-ui
+
+backend minilab-ui
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s
+    {% for host in groups['masters'] %}
+    server {{ host }} {{ hostvars[host]['ansible_host'] }}:443 check
+    {% endfor %}

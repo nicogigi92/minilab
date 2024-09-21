@@ -1,0 +1,17 @@
+---
+- name: Install HAProxy
+  apt:
+    name: haproxy
+    state: present
+    update_cache: true
+
+- name: Push HAProxy configuration
+  template:
+    src: "haproxy.cfg.j2"
+    dest: /etc/haproxy/haproxy.cfg
+
+- name: Restart HAProxy
+  service:
+    name: haproxy
+    state: restarted
+    enabled: true

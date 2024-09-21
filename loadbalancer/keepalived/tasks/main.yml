@@ -1,0 +1,17 @@
+---
+- name: Install Keepalived
+  apt:
+    name: keepalived
+    state: present
+    update_cache: true
+
+- name: Push Keepalived configuration
+  template:
+    src: "keepalived.conf.j2"
+    dest: /etc/keepalived/keepalived.conf
+
+- name: Restart Keepalived
+  service:
+    name: keepalived
+    state: restarted
+    enabled: true
