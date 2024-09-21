@@ -2,6 +2,7 @@ all:
   vars:
     loadbalancers_vip: "{{ lookup('env', 'LB_VIP') }}"
     keepalived_password: "{{ lookup('env', 'KEEPALIVED_PASSWORD') }}"
+    k3s_token:  "{{ lookup('env', 'K3S_TOKEN') }}"
     
 loadbalancers:
   hosts:

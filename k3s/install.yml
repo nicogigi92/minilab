@@ -1,0 +1,36 @@
+---
+- name: Install k3s on server nodes
+  hosts: masters
+  become: true
+  tasks:
+
+    - name: Install first k3s server and get kubeconfig
+      when: inventory_hostname == groups['masters'][0]
+      ansible.builtin.shell: curl -sfL https://get.k3s.io | K3S_TOKEN="{{ k3s_token }}" sh -s - server --cluster-init --tls-san="{{ loadbalancers_vip }}"
+
+    - name: Get kubeconfig /etc/rancher/k3s/k3s.yaml
+      when: inventory_hostname == groups['masters'][0]
+      ansible.builtin.fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: ../kubeconfig.yaml
+        flat: yes
+
+    - name: Replace https://127.0.0.1:6443 by https://{{ loadbalancers_vip }}:6443 in kubeconfig.yaml
+      when: inventory_hostname == groups['masters'][0]
+      delegate_to: localhost
+      ansible.builtin.replace:
+        path: ../kubeconfig.yaml
+        regexp: 'https://127.0.0.1:6443'
+        replace: "https://{{ loadbalancers_vip }}:6443"
+        
+    - name: Install other k3s server
+      when:
+        - inventory_hostname != groups['masters'][0]
+      ansible.builtin.shell: curl -sfL https://get.k3s.io | K3S_TOKEN="{{ k3s_token }}" sh -s - server --server https://{{ hostvars[groups['masters'][0]]['ansible_host'] }}:6443 --tls-san="{{ loadbalancers_vip }}"
+
+- name: Install k3s on agent nodes
+  hosts: workers
+  become: true
+  tasks:
+    - name: Install k3s agent
+      ansible.builtin.shell: curl -sfL https://get.k3s.io | K3S_TOKEN="{{ k3s_token }}" sh -s - agent --server https://{{ hostvars[groups['masters'][0]]['ansible_host'] }}:6443
