@@ -12,10 +12,12 @@ I wanted to have a k8s cluster at home so I could play and test things. I wanted
 - x1 Rasperry Pi 3
 - x7 BrandRex 6A ethernet cable
 
+![Alt text](./img/hardware.jpg "Hardware")
+
 ## Architecture
 
 My lab is not exposed to the internet via my home router. This avoids dependency on the home router and reduces the amount of network configuration.
 To access it, I just need to connect my PC to my ZeroTier network. As the loadbalancers are also in the network, I have access to the API server (to administer my cluster) and the ingress (to consume its services).
 
-![Alt text](./architecture.png "Architecture")
+![Alt text](./img/architecture.png "Architecture")
 
