@@ -82,3 +82,35 @@ I like this simple configuration because it allows me to distribute etcd and kub
 - [x] Ensure HA and fully automated deployment
 - [ ] Add a minimum of security by running CIS hardening scripts, for example.
 - [ ] Add an ansible script for upgrading k8s and even the OS
+
+### Go benchmark kube-api
+
+As a little exercise to start learning go, I've created a [little tool](./go-benchmark-kube-api) to benchmark my kube api server.
+For now it's fairly simple and contains the following functionality:
+- [x] Select the number of requests per second
+- [x] Select total execution time
+- [x] Calculate the number of failed requests
+- [x] Calculate the number of requests that throttle based on an abnormally long request time (>1s)
+- [x] Calculate the average query time
+
+We use go routines spaced by a ticker to launch the correct number of requests. 
+The tool uses the default kubeconfig and is launched with the following command:
+```bash
+$: go run benchmark.go -rps 1 -duration 120
+Benchmark finished!
+Total number of requests sent: 120
+Total number of failed requests: 0
+Number of requests with throttling detected: 0
+Average response time: 0.015539
+```
+I find the results rather strange because the server slows down from 4 requests per second, which seems very low to me:
+```bash
+$: go run benchmark.go -rps 4 -duration 5
+I0922 18:04:09.874384   43487 request.go:700] Waited for 1.000128103s due to client-side throttling, not priority and fairness, request: GET:https://<LB_IP>:6443/api/v1/nodes
+Benchmark finished!
+Total number of requests sent: 20
+Total number of failed requests: 0
+Number of requests with throttling detected: 1
+Average response time: 0.209232
+```
+ I'm currently setting up a monitoring stack to understand all this.
