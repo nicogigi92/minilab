@@ -103,7 +103,7 @@ Total number of failed requests: 0
 Number of requests with throttling detected: 0
 Average response time: 0.015539
 ```
-I find the results rather strange because the server slows down from 4 requests per second, which seems very low to me:
+For the moment, the results are not relevant because I'm blocked by a rate limit on the client side.
 ```bash
 $: go run benchmark.go -rps 4 -duration 5
 I0922 18:04:09.874384   43487 request.go:700] Waited for 1.000128103s due to client-side throttling, not priority and fairness, request: GET:https://<LB_IP>:6443/api/v1/nodes
@@ -113,4 +113,15 @@ Total number of failed requests: 0
 Number of requests with throttling detected: 1
 Average response time: 0.209232
 ```
- I'm currently setting up a monitoring stack to understand all this.
+A good configuration of the client will allow me to bypass it.
+
+### Helm stack
+
+In this repo I keep my Helm Chart configuration.
+I try to use the native helm controller of k3s to manage my charts in an elegant way. For the moment this stack is very basic but should be the big work of this project. We have:
+
+- Longhorn to use workstation SSDs as persistent and distributed storage.
+- Kube prometheus stack to have a base on which to add future monitoring. 
+- An overconfiguration of traefik to make its dashboard accessible.
+
+This project does not contain a dedicated DNS for the moment and ingress can be accessed by modifying the `/etc/hosts` file.
