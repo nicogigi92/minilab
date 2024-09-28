@@ -59,6 +59,7 @@ func main() {
 
 	// Load the Kubernetes configuration
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	config.RateLimiter = nil
 	if err != nil {
 		log.Fatalf("Error loading kubeconfig: %v", err)
 	}
