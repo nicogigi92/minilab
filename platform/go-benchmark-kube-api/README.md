@@ -1,6 +1,6 @@
 # Go benchmark kube-api
 
-As a little exercise to start learning go, I've created a [little tool](./go-benchmark-kube-api) to benchmark my kube api server.
+As a little exercise to start learning go, I've created a little tool to benchmark my kube api server.
 For now it's fairly simple and contains the following functionality:
 - [x] Select the number of requests per second
 - [x] Select total execution time
