@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-autoscale
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: nginx-autoscale
+  namespace: kube-system
+spec:
+  repo: https://charts.bitnami.com/bitnami
+  chart: nginx
+  targetNamespace: nginx-autoscale
+  valuesContent: |-
+    replicaCount: 1
+    networkPolicy:
+      enabled: false
+    service:
+      type: ClusterIP
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        namespace: "monitoring"
+        labels:
+          release: monitoring

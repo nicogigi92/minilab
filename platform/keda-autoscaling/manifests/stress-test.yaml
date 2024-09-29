@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-stresstest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-stress-test
+  namespace: nginx-stresstest
+  labels:
+    app: http-stress-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-stress-test
+  template:
+    metadata:
+      labels:
+        app: http-stress-test
+    spec:
+      containers:
+        - name: http-stress-test
+          image: nicogigi92/http-stress-test:v1.0
+          args:
+            - "--url=http://nginx-autoscale.nginx-autoscale"
+            - "--rps=100"
+            - "--duration=1000000000000"
+          resources:
+            limits:
+              memory: "100Mi"
+              cpu: "500m"
+            requests:
+              memory: "100Mi"
+              cpu: "300m"
+                    
