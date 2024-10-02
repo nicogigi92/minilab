@@ -31,7 +31,6 @@ ansible-playbook -i inventory.yml ./loadbalancer/playbook.yml
 ## K3S
 
 The k3s folder allows me to uninstall and install k3s on my hosts at my request.
-For the moment there is no particular configuration other than HA. 
 
 - The playbook starts by initialising the cluster on the first master and immediately download the kubeconfig file
 - Then it installs k3s in server mode on the other two
@@ -48,7 +47,10 @@ ansible-playbook -i inventory.yml ./k3s/uninstall.yml -K
 
 I like this simple configuration because it allows me to distribute etcd and kube-api server on three nodes while still being able to run pods on my master nodes. For the little hardware and load I have, it's perfectly acceptable. 
 
+*Nb: We install k3s in no-kube-proxy mode to make room for the Cilium data plane, the configuration of which is specified in the platform folder* 
+
 **To do :**
 - [x] Ensure HA and fully automated deployment
+- [x] Install k3s in no-kube-proxy mode to allow Cilium data plane
 - [ ] Add a minimum of security by running CIS hardening scripts, for example.
 - [ ] Add an ansible script for upgrading k8s and even the OS

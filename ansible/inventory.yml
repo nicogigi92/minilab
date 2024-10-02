@@ -1,6 +1,7 @@
 all:
   vars:
-    loadbalancers_vip: "{{ lookup('env', 'LB_VIP') }}"
+    lb_zt_vip: "{{ lookup('env', 'LB_ZT_VIP') }}"
+    lb_local_vip: "{{ lookup('env', 'LB_LOCAL_VIP') }}"
     keepalived_password: "{{ lookup('env', 'KEEPALIVED_PASSWORD') }}"
     k3s_token:  "{{ lookup('env', 'K3S_TOKEN') }}"
     

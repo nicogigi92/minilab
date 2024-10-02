@@ -2,7 +2,7 @@ global_defs {
     dynamic_interfaces
 }
 
-vrrp_instance VI_1 {
+vrrp_instance ZT_VIP {
     state {{ role }}
     interface {{ ansible_interfaces | select('match','zt*') | list | first }}
     virtual_router_id 51
@@ -13,6 +13,21 @@ vrrp_instance VI_1 {
         auth_pass  {{ keepalived_password }}
     }
     virtual_ipaddress {
-        {{ loadbalancers_vip }}
+        {{ lb_zt_vip }}
+    }
+}
+
+vrrp_instance LOCAL_VIP {
+    state {{ role }}
+    interface eth0
+    virtual_router_id 52
+    priority 101
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass  {{ keepalived_password }}
+    }
+    virtual_ipaddress {
+        {{ lb_local_vip }}
     }
 }
