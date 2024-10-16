@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime-kuma
+  namespace: monitoring
+  labels:
+    app: uptime-kuma
+    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/instance: uptime-kuma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uptime-kuma
+      app.kubernetes.io/name: uptime-kuma
+      app.kubernetes.io/instance: uptime-kuma
+  template:
+    metadata:
+      labels:
+        app: uptime-kuma
+        app.kubernetes.io/name: uptime-kuma
+        app.kubernetes.io/instance: uptime-kuma
+    spec:
+      containers:
+        - name: uptime-kuma
+          image: louislam/uptime-kuma:1
+          ports:
+            - containerPort: 3001
+              name: http
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: custom-hosts
+              mountPath: /etc/hosts
+              subPath: hosts
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: uptime-kuma-pvc
+        - name: custom-hosts
+          configMap:
+            name: custom-hosts
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uptime-kuma-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uptime-kuma
+  namespace: monitoring
+  labels:
+    app: uptime-kuma
+    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/instance: uptime-kuma
+spec:
+  selector:
+    app: uptime-kuma
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3001
+      targetPort: 3001
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-hosts
+  namespace: monitoring
+data:
+  hosts: |
+    <LOADBALANCER_IP> opencti.minilab.sh
+    <LOADBALANCER_IP> traefik.minilab.sh
